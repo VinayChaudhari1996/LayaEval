@@ -27,7 +27,6 @@
   <a href="#supported-metrics-catalog">Metric Catalog</a> &bull;
   <a href="#cli-usage">CLI Reference</a> &bull;
   <a href="#acknowledgements--special-thanks">Acknowledgements</a> &bull;
-  <a href="#citation">Citation</a> &bull;
   <a href="#license">License</a>
 </p>
 
@@ -353,21 +352,6 @@ Special thanks and gratitude to the **[Laya](https://github.com/NandhaKishorM/la
 - **Laya GitHub Repository**: [github.com/NandhaKishorM/laya](https://github.com/NandhaKishorM/laya)
 - **Laya MCP Ecosystem & Docs**: [github.com/NandhaKishorM/laya/blob/main/docs](https://github.com/NandhaKishorM/laya/blob/main/docs)
 
----
-
-## Citation
-
-If you use LayaEval or its metric suite in your research, pipelines, or benchmarks, please cite:
-
-```bibtex
-@software{layaeval2026,
-  author = {Chaudhari, Vinay},
-  title = {LayaEval: Ultra-Fast Neural Evaluation Framework for Agent and RAG Systems},
-  year = {2026},
-  url = {https://github.com/VinayChaudhari1996/LayaEval},
-  publisher = {GitHub}
-}
-```
 
 ---
 
