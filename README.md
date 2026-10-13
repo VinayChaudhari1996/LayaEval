@@ -206,6 +206,13 @@ uv run --with jupyter jupyter lab examples/notebook/
 
 ## How It Works
 
+<p align="center">
+  <img alt="LayaEval Architecture" src="https://raw.githubusercontent.com/VinayChaudhari1996/LayaEval/main/assets/architecture.svg" width="100%">
+</p>
+
+<details>
+<summary><b>View Mermaid Source</b></summary>
+
 ```mermaid
 flowchart LR
     subgraph Client["Your Application / Pipeline"]
@@ -226,6 +233,8 @@ flowchart LR
     G --> H["Calibrated Verdicts\nScore (0-4) • P(true) • Confidence"]
     H --> C
 ```
+
+</details>
 
 1. **State Aggregation**: You supply standard state keys (`query`, `retrieved_context`, `response`, `agent_trace`, etc.).
 2. **Batch Construction**: LayaEval compiles the requested metrics into typed neural decision prompts.
@@ -352,7 +361,7 @@ If you use LayaEval or its metric suite in your research, pipelines, or benchmar
 
 ```bibtex
 @software{layaeval2026,
-  author = {Chaudhari, Vinay and Laya Open Source Contributors},
+  author = {Chaudhari, Vinay},
   title = {LayaEval: Ultra-Fast Neural Evaluation Framework for Agent and RAG Systems},
   year = {2026},
   url = {https://github.com/VinayChaudhari1996/LayaEval},
