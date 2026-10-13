@@ -1,0 +1,59 @@
+[project]
+name = "layaeval"
+version = "0.1.0"
+description = "Agent and RAG evaluation metrics powered by the Laya MCP server"
+readme = "README.md"
+authors = [
+    { name = "Vinay Chaudhari", email = "vinaychaudhari1996@gmail.com" }
+]
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+keywords = [
+    "evaluation", "rag", "agent", "llm-as-judge", "laya", "mcp",
+    "groundedness", "faithfulness", "metrics", "ai-evaluation",
+    "hallucination", "tool-accuracy", "policy-compliance",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+laya = ["laya>=0.3.28"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+layaeval = "layaeval.cli:main"
+
+[project.urls]
+Homepage      = "https://github.com/VinayChaudhari1996/LayaEval"
+Repository    = "https://github.com/VinayChaudhari1996/LayaEval"
+Documentation = "https://github.com/VinayChaudhari1996/LayaEval#readme"
+
+[build-system]
+requires      = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
