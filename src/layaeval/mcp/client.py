@@ -11,6 +11,8 @@ import threading
 from collections.abc import Sequence
 from typing import Any
 
+from .._version import __version__
+
 
 class MCPClientError(Exception):
     """Raised when an MCP client or server interaction fails."""
@@ -190,7 +192,7 @@ class LayaMCPClient:
             "capabilities": {},
             "clientInfo": {
                 "name": "layaeval",
-                "version": "0.1.0",
+                "version": __version__,
             },
         }
         self._send_request("initialize", init_params)

@@ -1,7 +1,5 @@
 <p align="center">
-  <picture>
-    <img alt="LayaEval Logo" src="assets/logo.svg" width="130" height="130">
-  </picture>
+  <img alt="LayaEval Logo" src="https://raw.githubusercontent.com/VinayChaudhari1996/LayaEval/main/assets/logo.svg" width="130" height="130">
 </p>
 
 <h1 align="center">LayaEval</h1>
@@ -14,7 +12,7 @@
 <p align="center">
   <a href="https://pypi.org/project/layaeval/"><img src="https://img.shields.io/pypi/v/layaeval.svg?style=flat-square&color=8A6AFF" alt="PyPI version"></a>
   <a href="https://pypi.org/project/layaeval/"><img src="https://img.shields.io/pypi/pyversions/layaeval.svg?style=flat-square&color=3776AB" alt="Python Versions"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square" alt="License"></a>
+  <a href="https://github.com/VinayChaudhari1996/LayaEval/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square" alt="License"></a>
   <a href="https://github.com/NandhaKishorM/laya"><img src="https://img.shields.io/badge/powered%20by-Laya%20MCP-8A6AFF?style=flat-square" alt="Powered by Laya MCP"></a>
   <a href="https://github.com/astral-sh/uv"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json&style=flat-square" alt="uv"></a>
 </p>
@@ -190,12 +188,12 @@ report.save("eval_report.json")
 
 ## Interactive Notebooks
 
-Hands-on Jupyter notebooks with end-to-end code, real-world examples, and step-by-step walkthroughs are available in the [`examples/notebook/`](examples/notebook/) folder:
+Hands-on Jupyter notebooks with end-to-end code, real-world examples, and step-by-step walkthroughs are available in the [`examples/notebook/`](https://github.com/VinayChaudhari1996/LayaEval/tree/main/examples/notebook) folder:
 
 | Evaluation Domain | Notebook File Path | Workflows & Metrics Covered | Run Command |
 | :--- | :--- | :--- | :--- |
-| 🔍 **RAG Evaluation** | [`examples/notebook/rag_metrics_evaluation.ipynb`](examples/notebook/rag_metrics_evaluation.ipynb) | End-to-end evaluation of retrieval relevance, document relevance, context sufficiency & coverage, groundedness, hallucination detection, citation correctness, and contradiction detection. | `uv run --with jupyter jupyter notebook examples/notebook/rag_metrics_evaluation.ipynb` |
-| 🤖 **Autonomous Agents** | [`examples/notebook/agent_metrics_evaluation.ipynb`](examples/notebook/agent_metrics_evaluation.ipynb) | Multi-step agent trace auditing, task completion, tool call & parameter validation, workflow navigation efficiency, agent groundedness, policy compliance, and prompt injection detection. | `uv run --with jupyter jupyter notebook examples/notebook/agent_metrics_evaluation.ipynb` |
+| 🔍 **RAG Evaluation** | [`examples/notebook/rag_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/rag_metrics_evaluation.ipynb) | End-to-end evaluation of retrieval relevance, document relevance, context sufficiency & coverage, groundedness, hallucination detection, citation correctness, and contradiction detection. | `uv run --with jupyter jupyter notebook examples/notebook/rag_metrics_evaluation.ipynb` |
+| 🤖 **Autonomous Agents** | [`examples/notebook/agent_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/agent_metrics_evaluation.ipynb) | Multi-step agent trace auditing, task completion, tool call & parameter validation, workflow navigation efficiency, agent groundedness, policy compliance, and prompt injection detection. | `uv run --with jupyter jupyter notebook examples/notebook/agent_metrics_evaluation.ipynb` |
 
 To launch the notebooks with all dependencies:
 
@@ -247,7 +245,7 @@ LayaEval uses three calibrated output types:
 
 ### 1. RAG Metrics Guide (20 Metrics)
 
-> 📓 **Interactive Notebook**: Open [`examples/notebook/rag_metrics_evaluation.ipynb`](examples/notebook/rag_metrics_evaluation.ipynb) for runnable code examples of each RAG metric.
+> 📓 **Interactive Notebook**: Open [`examples/notebook/rag_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/rag_metrics_evaluation.ipynb) for runnable code examples of each RAG metric.
 
 | Metric & ID | Definition | Type / Scale | Good Score (Pass) | Bad Score (Fail) | Required Inputs |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -276,7 +274,7 @@ LayaEval uses three calibrated output types:
 
 ### 2. Agent Metrics Guide (22 Metrics)
 
-> 📓 **Interactive Notebook**: Open [`examples/notebook/agent_metrics_evaluation.ipynb`](examples/notebook/agent_metrics_evaluation.ipynb) for runnable code examples of each Agent metric.
+> 📓 **Interactive Notebook**: Open [`examples/notebook/agent_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/agent_metrics_evaluation.ipynb) for runnable code examples of each Agent metric.
 
 | Metric & ID | Definition | Type / Scale | Good Score (Pass) | Bad Score (Fail) | Required Inputs |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -366,4 +364,4 @@ If you use LayaEval or its metric suite in your research, pipelines, or benchmar
 
 ## License
 
-This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0. See the [LICENSE](https://github.com/VinayChaudhari1996/LayaEval/blob/main/LICENSE) file for details.
