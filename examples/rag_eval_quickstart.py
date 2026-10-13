@@ -13,9 +13,7 @@ def main():
         "Paris is the capital and most populous city of France, with an "
         "estimated population of 2.1 million residents within city limits."
     )
-    response = (
-        "Paris is the capital of France, home to approximately 2.1 million people."
-    )
+    response = "Paris is the capital of France, home to approximately 2.1 million people."
 
     # Option 1: Ultra-simple 1-liner with metric names or instances!
     results = layaeval.evaluate(

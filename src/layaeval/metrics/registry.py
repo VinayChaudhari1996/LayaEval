@@ -154,7 +154,9 @@ def get_metric(
                 init_kwargs["threshold"] = threshold
             return cls(**init_kwargs)
 
-        all_keys = sorted(set(list(_BY_NAME.keys()) + list(_BY_ID.keys()) + list(_BY_CLASS_NAME.keys())))
+        all_keys = sorted(
+            set(list(_BY_NAME.keys()) + list(_BY_ID.keys()) + list(_BY_CLASS_NAME.keys()))
+        )
         matches = difflib.get_close_matches(key, all_keys, n=3, cutoff=0.6)
         hint = f" Did you mean: {', '.join(matches)}?" if matches else ""
         raise ValueError(f"Unknown metric '{identifier}'.{hint}")
@@ -199,15 +201,17 @@ def list_metrics(category: str | None = None) -> list[dict[str, Any]]:
         if category_lower and cat != category_lower:
             continue
 
-        catalog.append({
-            "id": cls.metric_id,
-            "name": cls.metric_name,
-            "class_name": cls.__name__,
-            "category": cat,
-            "question_type": cls.question_type,
-            "state_fields": list(cls.state_fields),
-            "optional_fields": list(cls.optional_fields),
-            "doc": (cls.__doc__ or "").strip().split("\n")[0],
-        })
+        catalog.append(
+            {
+                "id": cls.metric_id,
+                "name": cls.metric_name,
+                "class_name": cls.__name__,
+                "category": cat,
+                "question_type": cls.question_type,
+                "state_fields": list(cls.state_fields),
+                "optional_fields": list(cls.optional_fields),
+                "doc": (cls.__doc__ or "").strip().split("\n")[0],
+            }
+        )
 
     return catalog

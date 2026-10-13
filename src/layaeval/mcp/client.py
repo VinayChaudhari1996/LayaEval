@@ -274,9 +274,11 @@ class DemoMCPClient:
         ctx = str(state.get("retrieved_context", state.get("agent_trace", ""))).lower()
 
         # Simple semantic overlap heuristic to provide natural outputs
-        has_overlap = any(
-            w in ctx for w in resp.replace(".", " ").replace(",", " ").split() if len(w) > 3
-        ) if (resp and ctx) else True
+        has_overlap = (
+            any(w in ctx for w in resp.replace(".", " ").replace(",", " ").split() if len(w) > 3)
+            if (resp and ctx)
+            else True
+        )
 
         for q_key, q_spec in questions.items():
             q_type = q_spec.get("type", "score")

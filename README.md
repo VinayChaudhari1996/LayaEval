@@ -105,7 +105,9 @@ results = layaeval.evaluate(
 )
 
 for r in results:
-    print(f"[{r.metric_name:<20}] Passed: {r.passed:<5} | Score: {r.score or r.noul:.2f} | Confidence: {r.confidence:.2f}")
+    print(
+        f"[{r.metric_name:<20}] Passed: {r.passed:<5} | Score: {r.score or r.noul:.2f} | Confidence: {r.confidence:.2f}"
+    )
 ```
 
 ### 2. Autonomous Agent Execution & Trace Evaluation

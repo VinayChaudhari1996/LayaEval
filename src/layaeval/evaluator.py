@@ -64,6 +64,7 @@ class Evaluator:
         """
         if demo and client is None:
             from .mcp.client import DemoMCPClient
+
             self.client = DemoMCPClient()
             self._external_client = True
         else:
@@ -93,7 +94,12 @@ class Evaluator:
 
     def evaluate(
         self,
-        target: Metric | type[Metric] | str | Sequence[Metric | type[Metric] | str] | EvalDataset | None = None,
+        target: Metric
+        | type[Metric]
+        | str
+        | Sequence[Metric | type[Metric] | str]
+        | EvalDataset
+        | None = None,
         *,
         metrics: Sequence[Metric | type[Metric] | str] | None = None,
         dataset: EvalDataset | None = None,
@@ -249,7 +255,12 @@ class Evaluator:
 
 
 def evaluate(
-    target: Metric | type[Metric] | str | Sequence[Metric | type[Metric] | str] | EvalDataset | None = None,
+    target: Metric
+    | type[Metric]
+    | str
+    | Sequence[Metric | type[Metric] | str]
+    | EvalDataset
+    | None = None,
     *,
     metrics: Sequence[Metric | type[Metric] | str] | None = None,
     dataset: EvalDataset | None = None,

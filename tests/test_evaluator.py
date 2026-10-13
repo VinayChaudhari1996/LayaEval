@@ -87,13 +87,12 @@ def test_evaluator_dataset():
 
 def test_top_level_evaluate_string_and_class():
     mock_client = MagicMock(spec=LayaMCPClient)
-    mock_client.predict.return_value = {
-        "groundedness": {"score": 3.5, "confidence": 0.9}
-    }
+    mock_client.predict.return_value = {"groundedness": {"score": 3.5, "confidence": 0.9}}
     ev = Evaluator(client=mock_client)
 
     # 1. String identifier
     from layaeval import evaluate
+
     res1 = evaluate("groundedness", evaluator=ev, retrieved_context="ctx", response="resp")
     assert res1.passed is True
     assert res1.score == 3.5
@@ -121,9 +120,7 @@ def test_top_level_evaluate_string_and_class():
 
 def test_metric_callable_and_evaluate_method():
     mock_client = MagicMock(spec=LayaMCPClient)
-    mock_client.predict.return_value = {
-        "groundedness": {"score": 3.8, "confidence": 0.95}
-    }
+    mock_client.predict.return_value = {"groundedness": {"score": 3.8, "confidence": 0.95}}
     ev = Evaluator(client=mock_client)
 
     g = Groundedness(threshold=3.0)
@@ -169,4 +166,3 @@ def test_get_metric_and_list_metrics():
     # Error with suggestion
     with pytest.raises(ValueError, match="Did you mean: groundedness"):
         get_metric("groundednes")
-
