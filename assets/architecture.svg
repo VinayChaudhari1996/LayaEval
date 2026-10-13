@@ -123,6 +123,6 @@
 
     <!-- Result Banner Text -->
     <text x="470" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#3FB950" text-anchor="middle">CALIBRATED VERDICTS RETURNED</text>
-    <text x="470" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#C9D1D9" text-anchor="middle">Score (0–4) &bull; Probability P(true) &bull; Statistical Confidence &bull; Automated Pass / Fail</text>
+    <text x="470" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#C9D1D9" text-anchor="middle">Score (0–4) • Probability P(true) • Statistical Confidence • Automated Pass / Fail</text>
   </g>
 </svg>
