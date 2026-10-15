@@ -18,10 +18,7 @@
       <stop offset="100%" stop-color="#f9cb28" />
     </linearGradient>
 
-    <!-- Whisper Micro-Shadow (Level 1: 0px 1px 2px rgba(0,0,0,0.04)) -->
-    <filter id="whisperShadow" x="-5%" y="-5%" width="110%" height="110%">
-      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.04" />
-    </filter>
+
 
     <!-- Arrow Markers -->
     <marker id="arrowInk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -43,7 +40,7 @@
 
   <!-- ==================== COLUMN 1: CLIENT APPLICATION ==================== -->
   <g transform="translate(32, 28)">
-    <rect width="264" height="276" rx="12" fill="#ffffff" stroke="#ebebeb" stroke-width="1" filter="url(#whisperShadow)" />
+    <rect width="264" height="276" rx="12" fill="#ffffff" stroke="#ebebeb" stroke-width="1" />
 
     <!-- Technical Eyebrow -->
     <text x="20" y="32" class="mono" font-size="11" font-weight="500" fill="#8f8f8f" letter-spacing="0.5">01 // CLIENT APPLICATION</text>
@@ -73,7 +70,7 @@
 
   <!-- ==================== COLUMN 2: ORCHESTRATION ==================== -->
   <g transform="translate(348, 28)">
-    <rect width="264" height="276" rx="12" fill="#ffffff" stroke="#ebebeb" stroke-width="1" filter="url(#whisperShadow)" />
+    <rect width="264" height="276" rx="12" fill="#ffffff" stroke="#ebebeb" stroke-width="1" />
 
     <!-- Technical Eyebrow -->
     <text x="20" y="32" class="mono" font-size="11" font-weight="500" fill="#8f8f8f" letter-spacing="0.5">02 // ORCHESTRATION</text>
@@ -99,7 +96,7 @@
 
   <!-- ==================== COLUMN 3: LAYA MCP ENGINE ==================== -->
   <g transform="translate(664, 28)">
-    <rect width="264" height="276" rx="12" fill="#ffffff" stroke="#ebebeb" stroke-width="1" filter="url(#whisperShadow)" />
+    <rect width="264" height="276" rx="12" fill="#ffffff" stroke="#ebebeb" stroke-width="1" />
 
     <!-- Technical Eyebrow -->
     <text x="20" y="32" class="mono" font-size="11" font-weight="500" fill="#8f8f8f" letter-spacing="0.5">03 // LAYA MCP ENGINE</text>
@@ -122,7 +119,7 @@
 
   <!-- ==================== BOTTOM SPEC BAND: OUTPUT CONTRACT ==================== -->
   <g transform="translate(32, 324)">
-    <rect width="896" height="82" rx="12" fill="#ffffff" stroke="#ebebeb" stroke-width="1" filter="url(#whisperShadow)" />
+    <rect width="896" height="82" rx="12" fill="#ffffff" stroke="#ebebeb" stroke-width="1" />
 
     <!-- Top Left Eyebrow -->
     <text x="20" y="24" class="mono" font-size="10" font-weight="500" fill="#8f8f8f" letter-spacing="0.5">OUTPUT CONTRACT // CALIBRATED VERDICTS</text>
