@@ -23,6 +23,11 @@ class EvalReport:
         return len(self.results)
 
     @property
+    def total_evaluations(self) -> int:
+        """Alias for total evaluation results count."""
+        return self.total
+
+    @property
     def passed_count(self) -> int:
         return sum(1 for r in self.results if r.passed)
 

@@ -29,6 +29,19 @@ def main(argv: list[str] | None = None) -> int:
     run_p.add_argument("--metrics", "-m", nargs="+", help="Metric names or IDs to evaluate")
     run_p.add_argument("--output", "-o", help="Path to write report JSON")
     run_p.add_argument("--model", default="auto", help="Laya model checkpoint ('auto', 'english')")
+    run_p.add_argument(
+        "--progress",
+        dest="progress",
+        action="store_true",
+        default=None,
+        help="Display hardware info and real-time progress bar (default)",
+    )
+    run_p.add_argument(
+        "--no-progress",
+        dest="progress",
+        action="store_false",
+        help="Disable progress bar and diagnostic banner",
+    )
 
     # compare
     cmp_p = subparsers.add_parser("compare", help="Compare candidate report against baseline")
@@ -61,8 +74,8 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"Loaded {len(dataset)} examples. Starting evaluation with {len(selected_metrics)} metrics..."
         )
-        with Evaluator(model=args.model) as ev:
-            report = ev.evaluate_dataset(dataset, selected_metrics)
+        with Evaluator(model=args.model, progress=args.progress) as ev:
+            report = ev.evaluate_dataset(dataset, selected_metrics, progress=args.progress)
 
         print("\n" + report.summary())
         if args.output:

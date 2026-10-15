@@ -5,6 +5,7 @@ from __future__ import annotations
 from ._version import __version__
 from .dataset import EvalDataset, EvalExample
 from .evaluator import Evaluator, close_default_evaluator, default_evaluator, evaluate
+from .hardware import HardwareInfo, detect_hardware
 from .mcp.client import DemoMCPClient, LayaMCPClient, MCPClientError
 from .metrics import agent, rag
 from .metrics._base import EvalResult, Metric
@@ -62,6 +63,7 @@ from .metrics.registry import (
     list_metrics,
     resolve_metrics,
 )
+from .progress import ProgressBar
 from .report import EvalReport
 
 __all__ = [
@@ -86,6 +88,9 @@ __all__ = [
     "LayaMCPClient",
     "DemoMCPClient",
     "MCPClientError",
+    "detect_hardware",
+    "HardwareInfo",
+    "ProgressBar",
     # 20 RAG metrics
     "RetrievalRelevance",
     "DocumentRelevance",

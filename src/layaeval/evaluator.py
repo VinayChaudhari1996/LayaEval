@@ -11,13 +11,14 @@ from .dataset import EvalDataset
 from .mcp.client import LayaMCPClient
 from .metrics._base import EvalResult, Metric
 from .metrics.registry import get_metric, resolve_metrics
+from .progress import ProgressBar, is_progress_enabled
 from .report import EvalReport
 
 _DEFAULT_EVALUATOR: Evaluator | None = None
 _DEFAULT_LOCK = threading.Lock()
 
 
-def default_evaluator() -> Evaluator:
+def default_evaluator(progress: bool | None = None) -> Evaluator:
     """Get or create the process-wide default Evaluator.
 
     Automatically cleans up its MCP server subprocess on exit.
@@ -25,7 +26,7 @@ def default_evaluator() -> Evaluator:
     global _DEFAULT_EVALUATOR
     with _DEFAULT_LOCK:
         if _DEFAULT_EVALUATOR is None:
-            _DEFAULT_EVALUATOR = Evaluator()
+            _DEFAULT_EVALUATOR = Evaluator(progress=progress)
             atexit.register(close_default_evaluator)
         return _DEFAULT_EVALUATOR
 
@@ -52,6 +53,7 @@ class Evaluator:
         model: str = "auto",
         timeout: float = 60.0,
         demo: bool = False,
+        progress: bool | None = None,
     ):
         """Initialize the evaluator.
 
@@ -61,7 +63,9 @@ class Evaluator:
             model: Model identifier to route to ('auto', 'english', etc.).
             timeout: Subprocess communication timeout in seconds.
             demo: If True, uses DemoMCPClient for simulated offline execution.
+            progress: Whether to show hardware accelerator and real-time progress.
         """
+        self.progress = is_progress_enabled(progress)
         if demo and client is None:
             from .mcp.client import DemoMCPClient
 
@@ -69,7 +73,11 @@ class Evaluator:
             self._external_client = True
         else:
             self._external_client = client is not None
-            self.client = client or LayaMCPClient(command=laya_server_cmd, timeout=timeout)
+            self.client = client or LayaMCPClient(
+                command=laya_server_cmd,
+                timeout=timeout,
+                progress=self.progress,
+            )
         self.model = model
         self.timeout = timeout
         self.demo = demo
@@ -106,6 +114,7 @@ class Evaluator:
         threshold: float | None = None,
         thresholds: dict[str, float] | None = None,
         name: str | None = None,
+        progress: bool | None = None,
         **state_kwargs: Any,
     ) -> EvalResult | list[EvalResult] | EvalReport:
         """Universal evaluation method.
@@ -131,7 +140,7 @@ class Evaluator:
             ds = target if isinstance(target, EvalDataset) else dataset
             assert ds is not None
             eval_metrics = metrics or []
-            return self.evaluate_dataset(ds, metrics=eval_metrics, name=name)
+            return self.evaluate_dataset(ds, metrics=eval_metrics, name=name, progress=progress)
 
         # Case 2: Multi-metric evaluation (sequence passed as target or metrics keyword)
         if isinstance(target, (list, tuple, set)):
@@ -203,6 +212,7 @@ class Evaluator:
         dataset: EvalDataset,
         metrics: Sequence[Metric | type[Metric] | str],
         name: str | None = None,
+        progress: bool | None = None,
     ) -> EvalReport:
         """Evaluate an entire dataset across a suite of metrics.
 
@@ -210,16 +220,26 @@ class Evaluator:
             dataset: EvalDataset instance containing examples.
             metrics: List of metrics to evaluate on each example.
             name: Optional name for report metadata.
+            progress: Whether to show progress bar during execution.
 
         Returns:
             An EvalReport with aggregate pass rates and comparison helpers.
         """
+        show_prog = self.progress if progress is None else bool(progress)
         resolved_metrics = resolve_metrics(metrics)
         all_results: list[EvalResult] = []
         metric_lookup = {m.metric_name.lower(): m for m in resolved_metrics}
         metric_id_lookup = {m.metric_id.lower(): m for m in resolved_metrics}
 
-        for example in dataset:
+        pbar = ProgressBar(
+            dataset,
+            total=len(dataset),
+            desc=f"Evaluating ({name or 'dataset'})",
+            unit="examples",
+            enabled=show_prog,
+        )
+
+        for example in pbar:
             # Determine which metrics apply for this example
             if example.metrics:
                 active_metrics: list[Metric] = []
@@ -270,6 +290,7 @@ def evaluate(
     model: str | None = None,
     name: str | None = None,
     demo: bool = False,
+    progress: bool | None = None,
     **state_kwargs: Any,
 ) -> EvalResult | list[EvalResult] | EvalReport:
     """High-level, ultra-simple evaluation entry point.
@@ -285,6 +306,7 @@ def evaluate(
         model: Optional model identifier override (e.g. 'auto', 'english').
         name: Optional run name for dataset reports.
         demo: Optional flag to use simulated client for offline testing / demonstrations.
+        progress: Whether to show hardware accelerator and real-time progress.
         **state_kwargs: Evaluation input state (query, retrieved_context, response, etc.).
 
     Returns:
@@ -308,9 +330,9 @@ def evaluate(
         report = layaeval.evaluate(dataset, metrics=["groundedness", "hallucination"])
     """
     if evaluator is None and demo:
-        ev = Evaluator(demo=True)
+        ev = Evaluator(demo=True, progress=progress)
     else:
-        ev = evaluator or default_evaluator()
+        ev = evaluator or default_evaluator(progress=progress)
     if model is not None:
         prev_model = ev.model
         ev.model = model
@@ -322,6 +344,7 @@ def evaluate(
                 threshold=threshold,
                 thresholds=thresholds,
                 name=name,
+                progress=progress,
                 **state_kwargs,
             )
         finally:
@@ -334,5 +357,6 @@ def evaluate(
         threshold=threshold,
         thresholds=thresholds,
         name=name,
+        progress=progress,
         **state_kwargs,
     )

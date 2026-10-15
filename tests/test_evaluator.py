@@ -166,3 +166,49 @@ def test_get_metric_and_list_metrics():
     # Error with suggestion
     with pytest.raises(ValueError, match="Did you mean: groundedness"):
         get_metric("groundednes")
+
+
+def test_hardware_detection():
+    from layaeval.hardware import detect_hardware
+
+    hw = detect_hardware()
+    assert hw.device_type in ("cuda", "mps", "cpu")
+    assert hw.cores >= 1
+    assert len(hw.description) > 0
+    assert str(hw) == hw.description
+
+
+def test_progress_bar_and_evaluator_progress():
+    from layaeval.progress import ProgressBar
+
+    items = [1, 2, 3]
+    collected = []
+    pbar = ProgressBar(items, desc="Testing", enabled=True)
+    for x in pbar:
+        collected.append(x)
+    assert collected == items
+
+    # Manual update
+    manual_pbar = ProgressBar(total=5, desc="Manual", enabled=True)
+    manual_pbar.update(2)
+    manual_pbar.set_postfix_str("2 done")
+    manual_pbar.update(3)
+    manual_pbar.close()
+
+
+def test_evaluate_dataset_with_progress():
+    mock_client = MagicMock(spec=LayaMCPClient)
+    mock_client.predict.return_value = {"groundedness": {"score": 3.9, "confidence": 0.95}}
+
+    dataset = EvalDataset(
+        [
+            EvalExample(state={"retrieved_context": "c1", "response": "r1"}),
+            EvalExample(state={"retrieved_context": "c2", "response": "r2"}),
+        ]
+    )
+
+    ev = Evaluator(client=mock_client, progress=True)
+    report = ev.evaluate_dataset(dataset, metrics=["groundedness"], progress=True)
+    assert report.total == 2
+    assert report.pass_rate == 1.0
+

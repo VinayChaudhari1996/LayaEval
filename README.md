@@ -188,6 +188,28 @@ print(f"Total Evaluations: {report.total_evaluations}")
 report.save("eval_report.json")
 ```
 
+### 6. Infrastructure Detection & Progress Tracking
+
+LayaEval automatically detects your compute infrastructure (NVIDIA CUDA GPUs, Apple Silicon Metal/MPS, or multi-core CPUs) and displays real-time progress bars as well as internal process visibility (including HuggingFace model weight downloads and MCP server initialization):
+
+```python
+import layaeval
+
+# Check your environment's compute accelerator
+hw = layaeval.detect_hardware()
+print(hw.description)
+# Output: "GPU: NVIDIA A100-SXM4-40GB (CUDA, 40.0 GB VRAM, Device 0)"
+#     or: "GPU: Apple Silicon Metal/MPS (10 cores)"
+#     or: "CPU: x86_64 (8 cores)"
+
+# Progress bars are enabled by default in Colab, Jupyter, and interactive terminals:
+report = layaeval.evaluate(dataset, metrics=["groundedness", "hallucination"], progress=True)
+
+# To silence progress output (e.g., in CI/CD pipelines):
+# report = layaeval.evaluate(dataset, metrics=["groundedness"], progress=False)
+# or set the environment variable: export LAYAEVAL_PROGRESS=0
+```
+
 ---
 
 ## Interactive Notebooks

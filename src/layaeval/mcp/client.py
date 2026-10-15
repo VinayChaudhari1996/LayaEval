@@ -12,6 +12,7 @@ from collections.abc import Sequence
 from typing import Any
 
 from .._version import __version__
+from ..progress import StderrWatcher, is_progress_enabled, show_hardware_banner
 
 
 class MCPClientError(Exception):
@@ -26,6 +27,7 @@ class LayaMCPClient:
         command: Sequence[str] | None = None,
         timeout: float = 60.0,
         env: dict[str, str] | None = None,
+        progress: bool | None = None,
     ):
         """Initialize the client.
 
@@ -34,11 +36,14 @@ class LayaMCPClient:
                 `["laya-mcp-server"]` or `[sys.executable, "-m", "laya.mcp.server"]`.
             timeout: Subprocess read/write timeout in seconds.
             env: Custom environment variables to pass to the subprocess.
+            progress: Whether to show hardware info and download/loading progress.
         """
         self.command = list(command) if command else self._default_command()
         self.timeout = timeout
         self.env = env
+        self.progress = is_progress_enabled(progress)
         self.process: subprocess.Popen | None = None
+        self._stderr_watcher: StderrWatcher | None = None
         self._msg_id = 0
         self._lock = threading.Lock()
 
@@ -53,6 +58,9 @@ class LayaMCPClient:
         """Start the MCP server subprocess and perform the initialize handshake."""
         if self.process is not None and self.process.poll() is None:
             return  # Already running
+
+        if self.progress:
+            show_hardware_banner()
 
         cmd_env = dict(os.environ)
         if self.env:
@@ -70,6 +78,11 @@ class LayaMCPClient:
                 bufsize=1,
                 env=cmd_env,
             )
+            if self.process.stderr:
+                self._stderr_watcher = StderrWatcher(
+                    self.process.stderr,
+                    show_progress=self.progress,
+                )
         except FileNotFoundError as exc:
             raise MCPClientError(
                 f"Failed to execute command '{' '.join(self.command)}'. "
@@ -98,6 +111,7 @@ class LayaMCPClient:
                 self.process.kill()
         finally:
             self.process = None
+            self._stderr_watcher = None
 
     def __enter__(self) -> LayaMCPClient:
         self.start()
@@ -134,12 +148,11 @@ class LayaMCPClient:
                 self.process.stdin.write(payload)
                 self.process.stdin.flush()
             except (BrokenPipeError, OSError) as exc:
-                stderr_text = ""
-                if self.process.stderr:
-                    try:
-                        stderr_text = self.process.stderr.read()
-                    except Exception:
-                        pass
+                stderr_text = (
+                    self._stderr_watcher.get_buffered_stderr()
+                    if self._stderr_watcher
+                    else ""
+                )
                 raise MCPClientError(
                     f"Failed writing to MCP server stdin: {exc}. Server stderr: {stderr_text}"
                 ) from exc
@@ -149,12 +162,11 @@ class LayaMCPClient:
                 assert self.process.stdout is not None
                 line = self.process.stdout.readline()
                 if not line:
-                    stderr_msg = ""
-                    if self.process.stderr:
-                        try:
-                            stderr_msg = self.process.stderr.read()
-                        except Exception:
-                            pass
+                    stderr_msg = (
+                        self._stderr_watcher.get_buffered_stderr()
+                        if self._stderr_watcher
+                        else ""
+                    )
                     hint = ""
                     if "laya[mcp]" in stderr_msg or "No module named 'mcp'" in stderr_msg:
                         hint = (
