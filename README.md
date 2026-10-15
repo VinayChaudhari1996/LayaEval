@@ -49,6 +49,7 @@
   - [6. Infrastructure Detection & Progress Tracking](#6-infrastructure-detection--progress-tracking)
 - [Interactive Notebooks](#interactive-notebooks)
 - [How It Works & Architecture](#how-it-works)
+- [Model Calibration & Best Practices](#model-calibration--best-practices)
 - [Supported Metrics Catalog (42 Metrics)](#supported-metrics-catalog)
   - [1. RAG Metrics Catalog (20 Metrics)](#1-rag-metrics-catalog-20-metrics)
   - [2. Agent Metrics Catalog (22 Metrics)](#2-agent-metrics-catalog-22-metrics)
@@ -57,21 +58,21 @@
 - [Acknowledgements & Special Thanks](#acknowledgements--special-thanks)
 - [License](#license)
 
-**LayaEval** is an ultra-fast, developer-first Python evaluation SDK for **Agentic workflows and RAG pipelines**, powered by the **Laya MCP Server**.
+**LayaEval** is a fast, developer-first Python evaluation SDK for **Agentic workflows and RAG pipelines**, powered by the **Laya MCP Server**.
 
-LayaEval brings **42 production-grade evaluation metrics** (20 RAG metrics + 22 Agent metrics) directly into your CI/CD and production verification loops—executed as calibrated, non-autoregressive neural decisions with **zero external LLM API cost** and **sub-50ms latency**.
+LayaEval brings **42 production-grade evaluation metrics** (20 RAG metrics + 22 Agent metrics) directly into your CI/CD and production verification loops—executed as calibrated, non-autoregressive neural decisions with **zero external LLM API cost** and **sub-50ms GPU latency**.
 
 ---
 
 ## Key Highlights
 
-- **Sub-50ms Latency**: Non-autoregressive neural verification replaces slow, multi-second LLM-as-a-judge roundtrips.
-- **Zero External Token Cost**: No OpenAI or Anthropic API bills for running quality guardrails and regression suites.
+- **Fast Non-Autoregressive Inference**: Replaces slow, multi-second LLM-as-a-judge roundtrips with sub-50ms evaluation on modern GPUs (e.g. NVIDIA CUDA, Apple Silicon Metal) and ~150–450ms on CPU.
+- **Zero External Token Cost**: No OpenAI or Anthropic API bills for running quality guardrails and regression suites. All inference runs on your own local infrastructure.
 - **42 Production-Ready Metrics**: Comprehensive coverage spanning retrieval quality, groundedness, hallucination risk, multi-step agent traces, tool accuracy, policy compliance, and prompt injections.
 - **Single Forward Pass Batching**: Evaluates multiple metrics for an interaction in a unified forward pass for optimal throughput.
-- **Calibrated Confidence**: Outputs statistical probabilities ($P(\text{true})$), standard confidence intervals, and configurable pass/fail thresholds.
-- **Native MCP Integration**: Direct connection via stdio JSON-RPC or embedded runtime to the Laya MCP ecosystem.
-- **Ultra Lightweight**: Zero heavy dependencies required at install time (`numpy` only).
+- **Calibrated Probabilities & Scores**: Outputs statistical probabilities ($P(\text{true})$), confidence intervals, and configurable pass/fail thresholds.
+- **Ultra-Lightweight Client SDK**: Zero heavy dependencies required for the client library (`numpy` only). Connects to a local or remote `laya-mcp-server`.
+- **Two Execution Modes**: Supports both **live local neural evaluation** via Laya MCP Server and **fast offline demo simulation** (`demo=True`) for lightweight testing and development without loading neural weights.
 
 ---
 
@@ -79,12 +80,13 @@ LayaEval brings **42 production-grade evaluation metrics** (20 RAG metrics + 22 
 
 | Feature | Traditional LLM-as-a-Judge | LayaEval |
 | :--- | :--- | :--- |
-| **Latency per Metric** | 1,500ms – 5,000ms | **< 50ms** |
+| **Latency per Metric** | 1,500ms – 5,000ms | **< 50ms (GPU) / ~200ms (CPU)** |
 | **API Cost** | ~$0.01 – $0.05 per eval call | **$0.00 (Zero external API fees)** |
-| **Determinism & Calibration** | Brittle prompt parsing & hallucinations | **Calibrated neural probabilities & confidence** |
+| **Data Privacy** | Sends traces to third-party APIs | **100% Local (data never leaves your machine)** |
+| **Determinism & Calibration** | Brittle prompt parsing & text generation | **Calibrated neural probabilities & confidence** |
 | **Multi-Metric Evaluation** | Sequential calls or bloated judge prompts | **Single forward-pass batching** |
 | **CI/CD Regression Suitability** | Slow, flaky, expensive | **Fast, offline-capable, cost-free** |
-| **Dependencies** | Bulky orchestration frameworks | **Ultra-lightweight (`numpy` only)** |
+| **Client Dependencies** | Bulky orchestration frameworks | **Ultra-lightweight SDK (`numpy` only)** |
 
 ---
 
@@ -92,20 +94,20 @@ LayaEval brings **42 production-grade evaluation metrics** (20 RAG metrics + 22 
 
 Install via [`uv`](https://github.com/astral-sh/uv) (recommended) or `pip`:
 
-```bash
-# Core package (ultra-lightweight, connects to existing laya-mcp-server)
-uv add layaeval
+### 1. Client SDK Only (Ultra-lightweight, NumPy only)
+Use this if you already have `laya-mcp-server` running, or plan to use offline simulation mode (`demo=True`):
 
-# Or with full local Laya runtime included:
-uv add "layaeval[laya]"
+```bash
+uv add layaeval
+# or: pip install layaeval
 ```
 
-Using standard `pip`:
+### 2. Full Setup with Local Laya MCP Server (Includes PyTorch & neural weights)
+Use this to run local neural inference on your machine:
 
 ```bash
-pip install layaeval
-# Or with local Laya runtime & MCP server:
-pip install "layaeval[laya]"
+uv add "layaeval[laya]"
+# or: pip install "layaeval[laya]"
 ```
 
 > **Google Colab / Jupyter Notebooks**:
@@ -116,6 +118,10 @@ pip install "layaeval[laya]"
 ---
 
 ## Quickstart
+
+> **Execution Modes**:
+> - **Live Local Neural Model**: If you installed `layaeval[laya]`, LayaEval automatically launches the local `laya-mcp-server` and evaluates queries with neural checkpoints on your GPU/CPU.
+> - **Offline Simulation Mode**: To run tests, offline demos, or CI pipelines without downloading model weights or PyTorch, pass `demo=True` (e.g. `layaeval.evaluate(..., demo=True)` or `Evaluator(demo=True)`). The example outputs below illustrate typical scores produced in these workflows.
 
 ### 1. Instant Multi-Metric RAG Evaluation
 
@@ -229,7 +235,7 @@ hallucination: True (Score/Risk: 0.06)
 Run evaluations against entire benchmark datasets and generate structured summary reports:
 
 ```python
-from layaeval import EvalDataset, evaluate
+from layaeval import EvalDataset, EvalReport, evaluate
 
 dataset = EvalDataset.from_jsonl("eval_benchmark.jsonl")
 
@@ -242,7 +248,12 @@ report = evaluate(
 print(report.summary())
 print(f"Pass Rate: {report.pass_rate * 100:.1f}%")
 print(f"Total Evaluations: {report.total_evaluations}")
+
+# Save report to JSON for CI/CD gates or archiving
 report.save("eval_report.json")
+
+# Reload saved report for regression checks or downstream analysis
+loaded_report = EvalReport.load("eval_report.json")
 ```
 
 **Output:**
@@ -342,6 +353,19 @@ flowchart LR
 2. **Batch Construction**: LayaEval compiles the requested metrics into typed neural decision prompts.
 3. **Sub-50ms Inference**: The Laya MCP Server runs a non-autoregressive forward pass, returning calibrated probabilities rather than generating arbitrary text tokens.
 4. **Normalized Results**: Every output is mapped to a typed `EvalResult` with normalized scores, confidence intervals, and pass/fail statuses against your specified thresholds.
+
+---
+
+## Model Calibration & Best Practices
+
+LayaEval uses calibrated probabilities ($P(\text{true})$), prediction confidence scores, and rubric-graded scores (0.0 to 4.0) instead of unstructured free-text generation:
+
+- **$P(\text{true})$ Probability**: Reflects the model's posterior likelihood that a factual or behavioral condition is met (e.g., that an answer is fully grounded or that a tool call was necessary).
+- **Confidence**: Quantifies the model's certainty in its prediction.
+- **In-Domain Validation**: Out-of-the-box base checkpoints provide a fast, zero-shot baseline for common RAG and agent interactions. For safety-critical or specialized production domains (e.g. medical, legal, or finance RAG):
+  1. **Curate a Benchmark Set**: Collect 100–200 representative labeled examples from your system logs.
+  2. **Tune Decision Thresholds**: Customize metric thresholds to balance precision vs. recall (e.g., use `HallucinationRisk(threshold=0.15)` for strict safety guardrails).
+  3. **Establish CI Regression Gates**: Save reports with `report.save("baseline.json")` and run `layaeval compare baseline.json candidate.json` in your CI/CD pipeline to automatically catch regressions before deployment.
 
 ---
 

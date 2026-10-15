@@ -10,6 +10,7 @@ from ._version import __version__
 from .dataset import EvalDataset
 from .evaluator import Evaluator
 from .metrics import ALL_METRICS, get_metric
+from .report import EvalReport
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -79,25 +80,31 @@ def main(argv: list[str] | None = None) -> int:
 
         print("\n" + report.summary())
         if args.output:
-            with open(args.output, "w", encoding="utf-8") as f:
-                f.write(report.to_json())
+            report.save(args.output)
             print(f"\nSaved report to {args.output}")
         return 0
 
     if args.command == "compare":
-        with open(args.baseline, "r", encoding="utf-8") as f:
-            base_data = json.load(f)
-        with open(args.candidate, "r", encoding="utf-8") as f:
-            cand_data = json.load(f)
-
-        [r for r in base_data.get("results", [])]
-        [r for r in cand_data.get("results", [])]
+        try:
+            base_report = EvalReport.load(args.baseline)
+            cand_report = EvalReport.load(args.candidate)
+            comparison = cand_report.compare(base_report)
+            base_rate = comparison["baseline_pass_rate"]
+            cand_rate = comparison["candidate_pass_rate"]
+            delta_rate = comparison["delta_pass_rate"]
+        except Exception:
+            with open(args.baseline, "r", encoding="utf-8") as f:
+                base_data = json.load(f)
+            with open(args.candidate, "r", encoding="utf-8") as f:
+                cand_data = json.load(f)
+            base_rate = base_data.get("pass_rate", 0.0)
+            cand_rate = cand_data.get("pass_rate", 0.0)
+            delta_rate = cand_rate - base_rate
 
         # Simple delta output
-        delta_rate = cand_data.get("pass_rate", 0) - base_data.get("pass_rate", 0)
         print("=" * 60)
-        print(f"Baseline Pass Rate:  {base_data.get('pass_rate', 0):.2%}")
-        print(f"Candidate Pass Rate: {cand_data.get('pass_rate', 0):.2%}")
+        print(f"Baseline Pass Rate:  {base_rate:.2%}")
+        print(f"Candidate Pass Rate: {cand_rate:.2%}")
         print(f"Delta:               {delta_rate:+.2%}")
         print("=" * 60)
         return 0

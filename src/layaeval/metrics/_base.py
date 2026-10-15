@@ -48,6 +48,24 @@ class EvalResult:
             "raw": self.raw,
         }
 
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> EvalResult:
+        """Create an EvalResult instance from a dictionary."""
+        return cls(
+            metric_id=data.get("metric_id", "GEN-000"),
+            metric_name=data.get("metric_name", "unknown"),
+            score=data.get("score"),
+            noul=data.get("noul"),
+            choice=data.get("choice"),
+            confidence=data.get("confidence"),
+            answer_confidence=data.get("answer_confidence"),
+            passed=bool(data.get("passed", False)),
+            threshold=float(data.get("threshold", 0.0)),
+            reason=data.get("reason"),
+            raw=data.get("raw", {}),
+            state=data.get("state", {}),
+        )
+
 
 class Metric:
     """Abstract base class for all LayaEval evaluation metrics."""

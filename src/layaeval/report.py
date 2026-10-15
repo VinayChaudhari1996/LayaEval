@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -77,6 +78,35 @@ class EvalReport:
     def to_json(self, indent: int = 2) -> str:
         """Serialize report to formatted JSON."""
         return json.dumps(self.to_dict(), indent=indent)
+
+    def save(self, filepath: str | Path, indent: int = 2) -> None:
+        """Save the evaluation report to a JSON file."""
+        target = Path(filepath)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(self.to_json(indent=indent), encoding="utf-8")
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> EvalReport:
+        """Create an EvalReport instance from a dictionary."""
+        results = [
+            EvalResult.from_dict(r) if isinstance(r, dict) else r
+            for r in data.get("results", [])
+        ]
+        metadata = data.get("metadata", {})
+        return cls(results=results, metadata=metadata)
+
+    @classmethod
+    def from_json(cls, json_str: str) -> EvalReport:
+        """Parse an EvalReport from a formatted JSON string."""
+        data = json.loads(json_str)
+        return cls.from_dict(data)
+
+    @classmethod
+    def load(cls, filepath: str | Path) -> EvalReport:
+        """Load an EvalReport from a JSON file path."""
+        target = Path(filepath)
+        content = target.read_text(encoding="utf-8")
+        return cls.from_json(content)
 
     def summary(self) -> str:
         """Render a readable summary table of the evaluation results."""
