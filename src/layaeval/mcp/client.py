@@ -170,7 +170,7 @@ class LayaMCPClient:
                     hint = ""
                     if "laya[mcp]" in stderr_msg or "No module named 'mcp'" in stderr_msg:
                         hint = (
-                            "\n\n👉 Missing MCP dependency: The Laya MCP server requires `mcp>=2.2.0`.\n"
+                            "\n\nMissing MCP dependency: The Laya MCP server requires `mcp>=2.2.0`.\n"
                             "   Install it with:\n"
                             "       pip install 'layaeval[laya]'\n"
                             "   or directly:\n"

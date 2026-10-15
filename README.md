@@ -35,27 +35,27 @@
 
 ## Table of Contents
 
-- [⚡ Key Highlights](#key-highlights)
-- [💡 Why LayaEval?](#why-layaeval)
-- [📦 Installation](#installation)
+- [Key Highlights](#key-highlights)
+- [Why LayaEval?](#why-layaeval)
+- [Installation](#installation)
   - [Standard pip / uv](#installation)
   - [Google Colab & Jupyter Setup](#installation)
-- [🚀 Quickstart & Real Code Examples](#quickstart)
+- [Quickstart & Real Code Examples](#quickstart)
   - [1. Instant Multi-Metric RAG Evaluation](#1-instant-multi-metric-rag-evaluation)
   - [2. Autonomous Agent Execution & Trace Evaluation](#2-autonomous-agent-execution--trace-evaluation)
   - [3. Direct Callable Metric Objects](#3-direct-callable-metric-objects)
   - [4. Managed Evaluator Context Session](#4-managed-evaluator-context)
   - [5. Dataset Benchmark Evaluation & Reports](#5-dataset-evaluation--reporting)
   - [6. Infrastructure Detection & Progress Tracking](#6-infrastructure-detection--progress-tracking)
-- [📓 Interactive Notebooks](#interactive-notebooks)
-- [🏗️ How It Works & Architecture](#how-it-works)
-- [📊 Supported Metrics Catalog (42 Metrics)](#supported-metrics-catalog)
+- [Interactive Notebooks](#interactive-notebooks)
+- [How It Works & Architecture](#how-it-works)
+- [Supported Metrics Catalog (42 Metrics)](#supported-metrics-catalog)
   - [1. RAG Metrics Catalog (20 Metrics)](#1-rag-metrics-catalog-20-metrics)
   - [2. Agent Metrics Catalog (22 Metrics)](#2-agent-metrics-catalog-22-metrics)
-- [💻 CLI Usage Reference](#cli-usage)
-- [🛠️ Development & Testing](#development--testing)
-- [🤝 Acknowledgements & Special Thanks](#acknowledgements--special-thanks)
-- [📄 License](#license)
+- [CLI Usage Reference](#cli-usage)
+- [Development & Testing](#development--testing)
+- [Acknowledgements & Special Thanks](#acknowledgements--special-thanks)
+- [License](#license)
 
 **LayaEval** is an ultra-fast, developer-first Python evaluation SDK for **Agentic workflows and RAG pipelines**, powered by the **Laya MCP Server**.
 
@@ -65,13 +65,13 @@ LayaEval brings **42 production-grade evaluation metrics** (20 RAG metrics + 22 
 
 ## Key Highlights
 
-- ⚡ **Sub-50ms Latency**: Non-autoregressive neural verification replaces slow, multi-second LLM-as-a-judge roundtrips.
-- 💰 **Zero External Token Cost**: No OpenAI or Anthropic API bills for running quality guardrails and regression suites.
-- 🎯 **42 Production-Ready Metrics**: Comprehensive coverage spanning retrieval quality, groundedness, hallucination risk, multi-step agent traces, tool accuracy, policy compliance, and prompt injections.
-- 🚀 **Single Forward Pass Batching**: Evaluates multiple metrics for an interaction in a unified forward pass for optimal throughput.
-- 📊 **Calibrated Confidence**: Outputs statistical probabilities ($P(\text{true})$), standard confidence intervals, and configurable pass/fail thresholds.
-- 🔌 **Native MCP Integration**: Direct connection via stdio JSON-RPC or embedded runtime to the Laya MCP ecosystem.
-- 🪶 **Ultra Lightweight**: Zero heavy dependencies required at install time (`numpy` only).
+- **Sub-50ms Latency**: Non-autoregressive neural verification replaces slow, multi-second LLM-as-a-judge roundtrips.
+- **Zero External Token Cost**: No OpenAI or Anthropic API bills for running quality guardrails and regression suites.
+- **42 Production-Ready Metrics**: Comprehensive coverage spanning retrieval quality, groundedness, hallucination risk, multi-step agent traces, tool accuracy, policy compliance, and prompt injections.
+- **Single Forward Pass Batching**: Evaluates multiple metrics for an interaction in a unified forward pass for optimal throughput.
+- **Calibrated Confidence**: Outputs statistical probabilities ($P(\text{true})$), standard confidence intervals, and configurable pass/fail thresholds.
+- **Native MCP Integration**: Direct connection via stdio JSON-RPC or embedded runtime to the Laya MCP ecosystem.
+- **Ultra Lightweight**: Zero heavy dependencies required at install time (`numpy` only).
 
 ---
 
@@ -279,8 +279,8 @@ report = layaeval.evaluate(dataset, metrics=["groundedness", "hallucination"], p
 
 **Output:**
 ```text
-⚡ [LayaEval] Hardware: GPU: NVIDIA A100-SXM4-40GB (CUDA, 40.0 GB VRAM, Device 0)
-🚀 [LayaEval] Initializing Laya MCP Server (model: auto)...
+[LayaEval] Hardware: GPU: NVIDIA A100-SXM4-40GB (CUDA, 40.0 GB VRAM, Device 0)
+[LayaEval] Initializing Laya MCP Server (model: auto)...
 [LayaEval] Evaluating (v1.2-rag-baseline): [████████████████████████] 100% (50/50 examples)
 ```
 
@@ -294,8 +294,8 @@ Hands-on Jupyter notebooks with end-to-end code, real-world examples, and step-b
 
 | Evaluation Domain | Notebook File Path | Workflows & Metrics Covered | Run Command |
 | :--- | :--- | :--- | :--- |
-| 🔍 **RAG Evaluation** | [`examples/notebook/rag_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/rag_metrics_evaluation.ipynb) | End-to-end evaluation of retrieval relevance, document relevance, context sufficiency & coverage, groundedness, hallucination detection, citation correctness, and contradiction detection. | `uv run --with jupyter jupyter notebook examples/notebook/rag_metrics_evaluation.ipynb` |
-| 🤖 **Autonomous Agents** | [`examples/notebook/agent_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/agent_metrics_evaluation.ipynb) | Multi-step agent trace auditing, task completion, tool call & parameter validation, workflow navigation efficiency, agent groundedness, policy compliance, and prompt injection detection. | `uv run --with jupyter jupyter notebook examples/notebook/agent_metrics_evaluation.ipynb` |
+| **RAG Evaluation** | [`examples/notebook/rag_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/rag_metrics_evaluation.ipynb) | End-to-end evaluation of retrieval relevance, document relevance, context sufficiency & coverage, groundedness, hallucination detection, citation correctness, and contradiction detection. | `uv run --with jupyter jupyter notebook examples/notebook/rag_metrics_evaluation.ipynb` |
+| **Autonomous Agents** | [`examples/notebook/agent_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/agent_metrics_evaluation.ipynb) | Multi-step agent trace auditing, task completion, tool call & parameter validation, workflow navigation efficiency, agent groundedness, policy compliance, and prompt injection detection. | `uv run --with jupyter jupyter notebook examples/notebook/agent_metrics_evaluation.ipynb` |
 
 To launch the notebooks with all dependencies:
 
@@ -356,7 +356,7 @@ LayaEval uses three calibrated output types:
 
 ### 1. RAG Metrics Catalog (20 Metrics)
 
-> 📓 **Interactive Notebook**: Open [`examples/notebook/rag_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/rag_metrics_evaluation.ipynb) for runnable code examples of each RAG metric.
+> **Interactive Notebook**: Open [`examples/notebook/rag_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/rag_metrics_evaluation.ipynb) for runnable code examples of each RAG metric.
 
 | # | Metric & ID | Definition | Output Type & Default Threshold | Required State Fields |
 | :-: | :--- | :--- | :--- | :--- |
@@ -385,7 +385,7 @@ LayaEval uses three calibrated output types:
 
 ### 2. Agent Metrics Catalog (22 Metrics)
 
-> 📓 **Interactive Notebook**: Open [`examples/notebook/agent_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/agent_metrics_evaluation.ipynb) for runnable code examples of each Agent metric.
+> **Interactive Notebook**: Open [`examples/notebook/agent_metrics_evaluation.ipynb`](https://github.com/VinayChaudhari1996/LayaEval/blob/main/examples/notebook/agent_metrics_evaluation.ipynb) for runnable code examples of each Agent metric.
 
 | # | Metric & ID | Definition | Output Type & Default Threshold | Required State Fields |
 | :-: | :--- | :--- | :--- | :--- |

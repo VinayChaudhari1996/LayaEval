@@ -67,9 +67,8 @@ def show_hardware_banner(
         _STARTUP_SHOWN = True
 
     hw = hardware or detect_hardware()
-    hw_icon = "⚡" if hw.is_gpu else "💻"
-    print(f"{hw_icon} [LayaEval] Hardware: {hw.description}")
-    print(f"🚀 [LayaEval] Initializing Laya MCP Server (model: {model})...")
+    print(f"[LayaEval] Hardware: {hw.description}")
+    print(f"[LayaEval] Initializing Laya MCP Server (model: {model})...")
     sys.stdout.flush()
 
 
@@ -105,7 +104,7 @@ class StderrWatcher:
 
                 # Check if this line looks like a download or model loading progress
                 if self.show_progress and self._is_progress_line(line):
-                    print(f"📥 [LayaEval] {line}", flush=True)
+                    print(f"[LayaEval] {line}", flush=True)
 
                 if self.on_line:
                     try:
