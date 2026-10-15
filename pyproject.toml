@@ -1,6 +1,6 @@
 [project]
 name = "layaeval"
-version = "0.1.6"
+version = "0.1.7"
 description = "Agent and RAG evaluation metrics powered by the Laya MCP server"
 readme = "README.md"
 authors = [

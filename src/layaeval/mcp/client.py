@@ -268,21 +268,35 @@ class LayaMCPClient:
         return res
 
 
-class DemoMCPClient:
-    """Lightweight simulated client for offline demonstrations, testing, and notebooks."""
+class MockMCPClient:
+    """Mock client returning deterministic synthetic fixtures for offline pipeline testing.
 
-    def __init__(self, **kwargs: Any) -> None:
-        pass
+    WARNING: This client produces synthetic mock fixtures for offline CI/CD plumbing
+    verification and integration testing. It does NOT perform semantic or neural evaluation.
+    Install `layaeval[laya]` to run live neural evaluations.
+    """
+
+    def __init__(self, warn: bool = True, **kwargs: Any) -> None:
+        if warn:
+            import warnings
+
+            warnings.warn(
+                "Running with MockMCPClient / demo mode. Synthetic mock fixtures are being returned "
+                "for offline testing. This does NOT perform real semantic evaluation. "
+                "Install 'layaeval[laya]' (`pip install 'layaeval[laya]'`) for live neural evaluations.",
+                UserWarning,
+                stacklevel=2,
+            )
 
     def start(self) -> None:
-        """No-op for demo client."""
+        """No-op for mock client."""
         pass
 
     def stop(self) -> None:
-        """No-op for demo client."""
+        """No-op for mock client."""
         pass
 
-    def __enter__(self) -> DemoMCPClient:
+    def __enter__(self) -> MockMCPClient:
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -295,18 +309,8 @@ class DemoMCPClient:
         model: str = "auto",
         **kwargs: Any,
     ) -> dict[str, Any]:
-        """Simulate realistic calibrated neural answers for demo execution."""
+        """Return deterministic synthetic mock answers for pipeline verification."""
         answers: dict[str, Any] = {}
-        resp = str(state.get("response", state.get("final_result", ""))).lower()
-        ctx = str(state.get("retrieved_context", state.get("agent_trace", ""))).lower()
-
-        # Simple semantic overlap heuristic to provide natural outputs
-        has_overlap = (
-            any(w in ctx for w in resp.replace(".", " ").replace(",", " ").split() if len(w) > 3)
-            if (resp and ctx)
-            else True
-        )
-
         for q_key, q_spec in questions.items():
             q_type = q_spec.get("type", "score")
             is_risk = any(
@@ -315,23 +319,25 @@ class DemoMCPClient:
             )
 
             if q_type == "score":
-                score = round(3.8 if has_overlap else 1.8, 2)
                 answers[q_key] = {
-                    "score": score,
-                    "confidence": 0.94,
-                    "answer_confidence": 0.91,
+                    "score": 3.0,
+                    "confidence": 0.50,
+                    "answer_confidence": 0.50,
                 }
             elif q_type == "noul":
-                noul = round(0.06 if is_risk else (0.94 if has_overlap else 0.25), 3)
                 answers[q_key] = {
-                    "noul": noul,
-                    "confidence": 0.95,
-                    "answer_confidence": 0.92,
+                    "noul": 0.10 if is_risk else 0.90,
+                    "confidence": 0.50,
+                    "answer_confidence": 0.50,
                 }
             elif q_type == "choice":
                 choices = q_spec.get("criteria", q_spec.get("choices", ["default"]))
                 answers[q_key] = {
                     "choice": choices[0] if choices else "selected",
-                    "confidence": 0.96,
+                    "confidence": 0.50,
                 }
         return answers
+
+
+# Backward-compatibility alias
+DemoMCPClient = MockMCPClient

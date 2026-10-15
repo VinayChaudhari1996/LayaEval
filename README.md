@@ -120,8 +120,8 @@ uv add "layaeval[laya]"
 ## Quickstart
 
 > **Execution Modes**:
-> - **Live Local Neural Model**: If you installed `layaeval[laya]`, LayaEval automatically launches the local `laya-mcp-server` and evaluates queries with neural checkpoints on your GPU/CPU.
-> - **Offline Simulation Mode**: To run tests, offline demos, or CI pipelines without downloading model weights or PyTorch, pass `demo=True` (e.g. `layaeval.evaluate(..., demo=True)` or `Evaluator(demo=True)`). The example outputs below illustrate typical scores produced in these workflows.
+> - **Live Neural Evaluation (Production)**: When `layaeval[laya]` is installed, LayaEval connects to the local non-autoregressive neural model (`laya-mcp-server`), running genuine semantic evaluations directly on your GPU/CPU with zero external API fees.
+> - **Mock Test Mode (`MockMCPClient` / `demo=True`)**: Designed specifically for CI/CD pipeline integration and offline wiring tests where loading PyTorch and neural model weights is not desired. It returns deterministic mock fixtures.
 
 ### 1. Instant Multi-Metric RAG Evaluation
 
@@ -145,9 +145,9 @@ for r in results:
 
 **Output:**
 ```text
-[groundedness        ] Passed: True  | Value: 3.80 | Confidence: 0.94
-[hallucination       ] Passed: True  | Value: 0.06 | Confidence: 0.95
-[response_relevance  ] Passed: True  | Value: 3.80 | Confidence: 0.94
+[groundedness        ] Passed: True  | Value: 3.60 | Confidence: 0.49
+[hallucination       ] Passed: True  | Value: 0.13 | Confidence: 0.87
+[response_relevance  ] Passed: True  | Value: 3.55 | Confidence: 0.45
 ```
 
 ---
@@ -165,7 +165,7 @@ trace = "Step 1: db.query(user_id=104) -> Plan: Pro\nStep 2: stripe.check(sub_id
 result = "User #104 has an active Pro subscription."
 
 res = layaeval.evaluate(
-    TaskCompletion(threshold=0.75),
+    TaskCompletion(threshold=0.50),
     task=task,
     agent_trace=trace,
     final_result=result,
@@ -176,7 +176,7 @@ print(f"Task Completed: {res.passed} (P(true) = {res.noul:.2f}, confidence = {re
 
 **Output:**
 ```text
-Task Completed: True (P(true) = 0.94, confidence = 0.95)
+Task Completed: True (P(true) = 0.68, confidence = 0.68)
 ```
 
 ---
@@ -192,15 +192,15 @@ groundedness = Groundedness(threshold=3.0)
 
 res = groundedness(
     retrieved_context="Paris is the capital of France.",
-    response="Paris is the capital.",
+    response="Paris is the capital of France.",
 )
 
-print(f"Passed: {res.passed} (Score: {res.score}/4.0 | Confidence: {res.confidence:.2f})")
+print(f"Passed: {res.passed} (Score: {res.score:.2f}/4.0 | Confidence: {res.confidence:.2f})")
 ```
 
 **Output:**
 ```text
-Passed: True (Score: 3.80/4.0 | Confidence: 0.94)
+Passed: True (Score: 3.17/4.0 | Confidence: 0.24)
 ```
 
 ---
@@ -224,8 +224,8 @@ with Evaluator(model="auto") as ev:
 
 **Output:**
 ```text
-groundedness: True (Score/Risk: 3.80)
-hallucination: True (Score/Risk: 0.06)
+groundedness: True (Score/Risk: 3.82)
+hallucination: True (Score/Risk: 0.00)
 ```
 
 ---
@@ -468,6 +468,9 @@ layaeval run dataset.jsonl --metrics groundedness hallucination task_completed -
 
 # 3. Compare candidate run against a baseline to check for regressions
 layaeval compare baseline_report.json candidate_report.json
+
+# 4. Run built-in test suite directly from your terminal
+layaeval test
 ```
 
 ---

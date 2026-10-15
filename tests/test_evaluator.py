@@ -212,3 +212,22 @@ def test_evaluate_dataset_with_progress():
     assert report.total == 2
     assert report.pass_rate == 1.0
 
+
+def test_mock_mcp_client_and_demo_mode():
+    import warnings
+
+    from layaeval.mcp.client import MockMCPClient
+
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        client = MockMCPClient()
+        assert len(w) == 1
+        assert "MockMCPClient" in str(w[-1].message)
+
+    res = client.predict(
+        state={"retrieved_context": "Paris is capital", "response": "Paris is capital"},
+        questions={"groundedness": {"type": "score"}},
+    )
+    assert res["groundedness"]["score"] == 3.0
+    assert res["groundedness"]["confidence"] == 0.50
+

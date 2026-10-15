@@ -49,6 +49,9 @@ def main(argv: list[str] | None = None) -> int:
     cmp_p.add_argument("baseline", help="Baseline report JSON file")
     cmp_p.add_argument("candidate", help="Candidate report JSON file")
 
+    # test
+    subparsers.add_parser("test", help="Run the built-in unit test suite")
+
     args = parser.parse_args(argv)
 
     if args.command == "list-metrics":
@@ -108,6 +111,17 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Delta:               {delta_rate:+.2%}")
         print("=" * 60)
         return 0
+
+    if args.command == "test":
+        try:
+            import pytest
+        except ImportError:
+            print("Error: pytest is required to run the test suite. Install with `pip install pytest`.")
+            return 1
+        from pathlib import Path
+
+        test_dir = Path(__file__).parent / "tests"
+        return pytest.main([str(test_dir), "-q"])
 
     return 0
 

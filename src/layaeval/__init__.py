@@ -6,7 +6,7 @@ from ._version import __version__
 from .dataset import EvalDataset, EvalExample
 from .evaluator import Evaluator, close_default_evaluator, default_evaluator, evaluate
 from .hardware import HardwareInfo, detect_hardware
-from .mcp.client import DemoMCPClient, LayaMCPClient, MCPClientError
+from .mcp.client import DemoMCPClient, LayaMCPClient, MCPClientError, MockMCPClient
 from .metrics import agent, rag
 from .metrics._base import EvalResult, Metric
 from .metrics.agent import (
@@ -86,6 +86,7 @@ __all__ = [
     "rag",
     "agent",
     "LayaMCPClient",
+    "MockMCPClient",
     "DemoMCPClient",
     "MCPClientError",
     "detect_hardware",
@@ -135,4 +136,22 @@ __all__ = [
     "PolicyCompliance",
     "PromptInjectionDetection",
     "IndirectPromptInjectionDetection",
+    "test",
 ]
+
+
+def test(args: list[str] | None = None) -> int:
+    """Run LayaEval's built-in unit test suite."""
+    try:
+        import pytest
+    except ImportError:
+        raise ImportError(
+            "pytest is required to run the test suite. Install with `pip install pytest`."
+        ) from None
+    from pathlib import Path
+
+    test_dir = Path(__file__).parent / "tests"
+    cmd = [str(test_dir)]
+    if args:
+        cmd.extend(args)
+    return pytest.main(cmd)
