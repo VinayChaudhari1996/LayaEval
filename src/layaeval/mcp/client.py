@@ -78,7 +78,11 @@ class LayaMCPClient:
             ) from exc
 
         # Perform MCP initialize handshake
-        self._initialize()
+        try:
+            self._initialize()
+        except Exception:
+            self.stop()
+            raise
 
     def stop(self) -> None:
         """Gracefully terminate the subprocess."""
@@ -151,8 +155,17 @@ class LayaMCPClient:
                             stderr_msg = self.process.stderr.read()
                         except Exception:
                             pass
+                    hint = ""
+                    if "laya[mcp]" in stderr_msg or "No module named 'mcp'" in stderr_msg:
+                        hint = (
+                            "\n\n👉 Missing MCP dependency: The Laya MCP server requires `mcp>=2.2.0`.\n"
+                            "   Install it with:\n"
+                            "       pip install 'layaeval[laya]'\n"
+                            "   or directly:\n"
+                            "       pip install 'laya[mcp]'\n"
+                        )
                     raise MCPClientError(
-                        f"MCP server closed stdout unexpectedly. Stderr: {stderr_msg}"
+                        f"MCP server closed stdout unexpectedly. Stderr: {stderr_msg}{hint}"
                     )
                 line = line.strip()
                 if not line:

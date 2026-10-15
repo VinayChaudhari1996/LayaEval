@@ -23,6 +23,15 @@ class EvalResult:
     raw: dict[str, Any] = field(default_factory=dict)
     state: dict[str, Any] = field(default_factory=dict)
 
+    @property
+    def value(self) -> float:
+        """Numeric value of the metric result (score or probability)."""
+        if self.score is not None:
+            return self.score
+        if self.noul is not None:
+            return self.noul
+        return 0.0
+
     def to_dict(self) -> dict[str, Any]:
         """Convert the result to a JSON-serializable dictionary."""
         return {

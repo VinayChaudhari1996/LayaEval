@@ -29,7 +29,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-laya = ["laya>=0.3.28"]
+laya = ["laya[mcp]>=0.3.28"]
 
 [dependency-groups]
 dev = [

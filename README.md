@@ -79,9 +79,14 @@ Using standard `pip`:
 
 ```bash
 pip install layaeval
-# Or with local Laya runtime:
+# Or with local Laya runtime & MCP server:
 pip install "layaeval[laya]"
 ```
+
+> **Google Colab / Jupyter Notebooks**:
+> ```bash
+> !pip install "layaeval[laya]"
+> ```
 
 ---
 
@@ -103,7 +108,7 @@ results = layaeval.evaluate(
 
 for r in results:
     print(
-        f"[{r.metric_name:<20}] Passed: {r.passed:<5} | Score: {r.score or r.noul:.2f} | Confidence: {r.confidence:.2f}"
+        f"[{r.metric_name:<20}] Passed: {r.passed:<5} | Value: {r.value:.2f} | Confidence: {r.confidence:.2f}"
     )
 ```
 
@@ -160,7 +165,7 @@ with Evaluator(model="auto") as ev:
         response="The company posted 24% YoY revenue growth.",
     )
     for r in results:
-        print(f"{r.metric_name}: {r.passed} (Score/Risk: {r.score or r.noul})")
+        print(f"{r.metric_name}: {r.passed} (Score/Risk: {r.value:.2f})")
 ```
 
 ### 5. Dataset Evaluation & Reporting

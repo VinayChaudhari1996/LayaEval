@@ -178,3 +178,17 @@ def test_intent_resolution_choice_parsing():
     assert res.passed is True
     assert res.choice == "troubleshooting"
     assert res.confidence == 0.98
+
+
+def test_eval_result_value_property():
+    from layaeval.metrics._base import EvalResult
+
+    r1 = EvalResult(metric_id="M1", metric_name="score_metric", score=3.8)
+    assert r1.value == 3.8
+
+    r2 = EvalResult(metric_id="M2", metric_name="noul_metric", noul=0.95)
+    assert r2.value == 0.95
+
+    r3 = EvalResult(metric_id="M3", metric_name="empty_metric")
+    assert r3.value == 0.0
+
